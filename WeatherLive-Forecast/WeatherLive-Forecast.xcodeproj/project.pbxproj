@@ -16,6 +16,9 @@
 		106F7DBA2CC8BEAA00E0F7A4 /* WeatherLive_ForecastTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106F7DB92CC8BEAA00E0F7A4 /* WeatherLive_ForecastTests.swift */; };
 		106F7DC42CC8BEAA00E0F7A4 /* WeatherLive_ForecastUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106F7DC32CC8BEAA00E0F7A4 /* WeatherLive_ForecastUITests.swift */; };
 		106F7DC62CC8BEAA00E0F7A4 /* WeatherLive_ForecastUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106F7DC52CC8BEAA00E0F7A4 /* WeatherLive_ForecastUITestsLaunchTests.swift */; };
+		106F7DD42CC8C1FD00E0F7A4 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106F7DD32CC8C1FD00E0F7A4 /* HomeViewController.swift */; };
+		106F7DD82CC8C25C00E0F7A4 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106F7DD72CC8C25C00E0F7A4 /* HomeViewModel.swift */; };
+		106F7DDD2CC8C2AB00E0F7A4 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 106F7DDC2CC8C2AB00E0F7A4 /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +52,9 @@
 		106F7DBF2CC8BEAA00E0F7A4 /* WeatherLive-ForecastUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WeatherLive-ForecastUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		106F7DC32CC8BEAA00E0F7A4 /* WeatherLive_ForecastUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLive_ForecastUITests.swift; sourceTree = "<group>"; };
 		106F7DC52CC8BEAA00E0F7A4 /* WeatherLive_ForecastUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherLive_ForecastUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		106F7DD32CC8C1FD00E0F7A4 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		106F7DD72CC8C25C00E0F7A4 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		106F7DDC2CC8C2AB00E0F7A4 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +108,8 @@
 				106F7DA22CC8BEA800E0F7A4 /* AppDelegate.swift */,
 				106F7DA42CC8BEA800E0F7A4 /* SceneDelegate.swift */,
 				106F7DA62CC8BEA800E0F7A4 /* ViewController.swift */,
+				106F7DDB2CC8C29300E0F7A4 /* NetworkManager */,
+				106F7DD22CC8C1C300E0F7A4 /* HomeScreen */,
 				106F7DA82CC8BEA800E0F7A4 /* Main.storyboard */,
 				106F7DAB2CC8BEA900E0F7A4 /* Assets.xcassets */,
 				106F7DAD2CC8BEA900E0F7A4 /* LaunchScreen.storyboard */,
@@ -125,6 +133,55 @@
 				106F7DC52CC8BEAA00E0F7A4 /* WeatherLive_ForecastUITestsLaunchTests.swift */,
 			);
 			path = "WeatherLive-ForecastUITests";
+			sourceTree = "<group>";
+		};
+		106F7DD22CC8C1C300E0F7A4 /* HomeScreen */ = {
+			isa = PBXGroup;
+			children = (
+				106F7DD92CC8C27200E0F7A4 /* Model */,
+				106F7DDA2CC8C27B00E0F7A4 /* Views */,
+				106F7DD62CC8C24900E0F7A4 /* ViewModel */,
+				106F7DD52CC8C23E00E0F7A4 /* Controller */,
+			);
+			path = HomeScreen;
+			sourceTree = "<group>";
+		};
+		106F7DD52CC8C23E00E0F7A4 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				106F7DD32CC8C1FD00E0F7A4 /* HomeViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		106F7DD62CC8C24900E0F7A4 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				106F7DD72CC8C25C00E0F7A4 /* HomeViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		106F7DD92CC8C27200E0F7A4 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		106F7DDA2CC8C27B00E0F7A4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		106F7DDB2CC8C29300E0F7A4 /* NetworkManager */ = {
+			isa = PBXGroup;
+			children = (
+				106F7DDC2CC8C2AB00E0F7A4 /* NetworkManager.swift */,
+			);
+			path = NetworkManager;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,9 +315,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				106F7DDD2CC8C2AB00E0F7A4 /* NetworkManager.swift in Sources */,
 				106F7DA72CC8BEA800E0F7A4 /* ViewController.swift in Sources */,
 				106F7DA32CC8BEA800E0F7A4 /* AppDelegate.swift in Sources */,
 				106F7DA52CC8BEA800E0F7A4 /* SceneDelegate.swift in Sources */,
+				106F7DD82CC8C25C00E0F7A4 /* HomeViewModel.swift in Sources */,
+				106F7DD42CC8C1FD00E0F7A4 /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
