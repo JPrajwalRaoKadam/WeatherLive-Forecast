@@ -19,6 +19,9 @@ class HomeViewController: UIViewController {
     let refreshControl = UIRefreshControl()
     var currentTableview: UITableView = UITableView()
     private var refreshControls: [UIRefreshControl] = []
+    private var cityWeatherDetails: CityWeatherDetailsModel?
+    private var weatherItems: [WeatherItem]?
+    var recentWeatherDetailsList: [CityWeatherDetailsModel] = []
     
     private lazy var pageControl: UIPageControl = {
         let control = UIPageControl()
@@ -47,13 +50,14 @@ class HomeViewController: UIViewController {
     var hamburgerMenu: HamburgerMenu!
     var currentPage: Int = 0
     private var pageTableViews: [UITableView] = []
+    var viewModel: HomeViewModel?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         self.homeTableView.isHidden = true
         locationManager.requestLocation()
-        getCurrentLatLon()
         //   homeTableView.backgroundColor = .purple
         homeTableView.register(cellType: WeatherTableViewCell.self)
         homeTableView.register(cellType: WeatherDetailTableViewCell.self)
@@ -66,7 +70,14 @@ class HomeViewController: UIViewController {
         
         CommonMethods.shared.setGradientBackground(view: self.view)
         self.currentTableview = homeTableView
+        
+        self.viewModel = HomeViewModel(self)
+        
+       getCurrentLatLon()
+
         //  configureRefreshControl()
+        
+        // Example usage:
     }
     
     
@@ -127,15 +138,15 @@ class HomeViewController: UIViewController {
     
     @objc func refreshData(_ sender: UIRefreshControl) {
         let pageIndex = sender.tag
+        viewModel?.getHomeScreenWeatherData(latitude: latitude, longitude: longitude)
         
         // Simulate network delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             // Update data for the specific page
-            self.getCurrentWeatherData()  // Fetch new weather data
+            // self.getCurrentWeatherData()  // Fetch new weather data
             
             // End refreshing
             sender.endRefreshing()
-            
             // Reload the specific table view
             self.pageTableViews[pageIndex].reloadData()
         }
@@ -209,8 +220,8 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func searchButtonAction(_ sender: Any) {
-        
         let citySearchVC = CitySearchViewController()
+        citySearchVC.delegate = self
         navigationController?.pushViewController(citySearchVC, animated: true)
     }
     
@@ -237,49 +248,13 @@ class HomeViewController: UIViewController {
             // print("Latitude: \(coordinate.latitude), Longitude: \(coordinate.longitude)")
             self.latitude = coordinate.latitude
             self.longitude = coordinate.longitude
+            
+            self.viewModel?.getHomeScreenWeatherData(latitude: self.latitude, longitude: self.longitude)
         }
     }
     
     func getSearchCityName() {
         // Assign searched city name
-    }
-    
-    func getWeatherData() {
-        
-        print("-----------------Search API -------------------------------------------------")
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?q=\(self.cityName)&appid=8c6787bccce2b30fe6f6a6a2e42d6a9e"
-        
-        NetworkManager.shared.fetchData(from: urlString, model: WeatherResponse.self) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let weatherResponse):
-                    print("Weather data: \(weatherResponse)")
-                    print("City: \(weatherResponse.name)")
-                    print("Temperature: \(weatherResponse.main.temp)")
-                case .failure(let error):
-                    print("Error fetching weather data: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-    
-    func getCurrentWeatherData() {
-        let urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(self.latitude)&lon=\(self.longitude)&appid=8c6787bccce2b30fe6f6a6a2e42d6a9e"
-        print("-------------------------CurrentLocationAPI-------------------------------------------------")
-        // Replace with your actual API URL
-        
-        NetworkManager.shared.fetchData(from: urlString, model: WeatherResponse.self) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let weatherResponse):
-                    print("Weather data: \(weatherResponse)")
-                    print("City: \(weatherResponse.name)")
-                    //                           print("Temperature: \(weatherResponse.main.temp)")
-                case .failure(let error):
-                    print("Error fetching weather data: \(error.localizedDescription)")
-                }
-            }
-        }
     }
     
 }
@@ -296,12 +271,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherTableViewCell", for: indexPath)
-            
-            return cell
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherTableViewCell", for: indexPath) as?  WeatherTableViewCell {
+                guard let data = self.cityWeatherDetails ?? nil else { return WeatherTableViewCell() }
+                cell.configureCell(data: data)
+                return cell
+            }
         case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherDetailTableViewCell", for: indexPath)
-            return cell
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "WeatherDetailTableViewCell", for: indexPath) as?  WeatherDetailTableViewCell {
+                cell.configureCell(data: self.weatherItems ?? [])
+                return cell
+            }
         default :
             if let cell = tableView.dequeueReusableCell(withIdentifier: "RecentWeatherTableViewCell", for: indexPath) as? RecentWeatherTableViewCell {
                 //  cell.setTableViewHeight()
@@ -313,7 +292,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        UITableView.automaticDimension
+        tableView.estimatedRowHeight = 250
+        return UITableView.automaticDimension
     }
 }
 
@@ -327,8 +307,15 @@ extension HomeViewController: MenuItemsTapped {
         case .favourites:
             self.pushViewController(fromStoryboard: "Main", viewControllerID: "FavouriteViewController")
         case .recents:
-            self.pushViewController(fromStoryboard: "Main", viewControllerID: "RecentSearchViewController")
+            self.pushViewControllerNew(withIdentifier: "RecentSearchViewController") { (detailVC: RecentSearchViewController) in
+                detailVC.configureRecentList(recentList: self.recentWeatherDetailsList)
+            }
         }
+    }
+    
+    private func getRecentsViewController() -> RecentSearchViewController? {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        return storyboard.instantiateViewController(withIdentifier: "RecentSearchViewController") as? RecentSearchViewController
     }
 }
 
@@ -344,5 +331,51 @@ extension HomeViewController: UIScrollViewDelegate {
         self.currentTableview = pageTableViews[page]
         //self.configureRefreshControl()
         pageTableViews[page].reloadData()
+    }
+}
+
+
+extension HomeViewController: HomeScreenDataProtocol {
+    func showLoader() {
+        LoaderManager.shared.showLoader(on: self.view)
+    }
+    
+    func hideLoader() {
+        LoaderManager.shared.hideLoader()
+    }
+    
+    func sendHomeScreenData(data: CityWeatherDetailsModel, weatherItems: [WeatherItem], isFromSearch: Bool) {
+        LoaderManager.shared.hideLoader()
+        DispatchQueue.main.async {
+            self.cityWeatherDetails = data
+            self.weatherItems = weatherItems
+            if isFromSearch {
+                self.recentWeatherDetailsList.append(data)
+            }
+            self.pageTableViews.forEach { $0.reloadData() }
+        }
+    }
+    
+    func handleError(_ error: Error) {
+        DispatchQueue.main.async {
+            // Hide loader in case of error
+            LoaderManager.shared.hideLoader()
+            
+            // Show error alert
+            let alert = UIAlertController(title: "Error",
+                                        message: error.localizedDescription,
+                                        preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true)
+        }
+    }
+}
+
+
+extension HomeViewController: SendSearchData {
+    
+    func sendSearchData(cityName: String) {
+        viewModel?.getWeatherData(cityName: cityName)
+        self.pageTableViews.forEach { $0.reloadData() }
     }
 }

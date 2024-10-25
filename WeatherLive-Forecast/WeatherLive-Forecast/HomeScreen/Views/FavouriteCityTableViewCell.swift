@@ -41,6 +41,12 @@ class FavouriteCityTableViewCell: UITableViewCell {
         self.containerView.layer.rasterizationScale = UIScreen.main.scale
 
     }
+    
+    func configureRecentListCell(data: CityWeatherDetailsModel) {
+        self.cityName.text = data.cityName
+        self.temperature.text = data.temperature
+        self.cityWeather.text = data.weatherDescription
+    }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

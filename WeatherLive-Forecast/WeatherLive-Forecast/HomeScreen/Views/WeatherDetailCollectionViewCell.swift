@@ -19,5 +19,11 @@ class WeatherDetailCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
         // Initialization code
     }
+    
+    func configureCell(data: WeatherItem) {
+        self.WeatherType.text = data.title
+        self.weatherRange.text = "\(data.value) \(data.unit)"
+        self.weatherDetailImageView.image = UIImage(named: data.imageName)
+    }
 
 }

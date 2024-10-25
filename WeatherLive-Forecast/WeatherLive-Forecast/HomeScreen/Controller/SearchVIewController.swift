@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol SendSearchData: AnyObject {
+    func sendSearchData(cityName: String)
+}
+
 class CitySearchViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
 
     let searchBar = UISearchBar()
@@ -16,6 +20,8 @@ class CitySearchViewController: UIViewController, UISearchBarDelegate, UITableVi
     var cityNames: [String] = []
     var filteredCities: [String] = []
     var searchText: String = "" // Store the current search text
+    
+    weak var delegate: SendSearchData?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,7 +92,14 @@ class CitySearchViewController: UIViewController, UISearchBarDelegate, UITableVi
     }
     
     @objc private func searchButtonTapped() {
-        // Handle search button action (for example, perform the search manually)
+        
+        if let text = self.searchBar.text {
+            self.delegate?.sendSearchData(cityName: text)
+            self.navigationController?.popViewController(animated: true)
+        } else {
+            //TODO: - Error Handle
+
+        }
         print("Search button tapped") // You can add your search logic here
     }
 

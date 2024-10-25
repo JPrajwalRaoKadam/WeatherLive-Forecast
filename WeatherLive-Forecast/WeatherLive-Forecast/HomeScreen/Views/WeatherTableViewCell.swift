@@ -34,6 +34,13 @@ class WeatherTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    func configureCell(data: CityWeatherDetailsModel) {
+        self.cityName.text = data.cityName
+        self.tempratureLabel.text = data.temperature
+        self.weatherDescrition.text = data.weatherDescription
+        self.weatherImage.image = UIImage(systemName: data.weatherImage)
+    }
+    
     
     @IBAction func celciusFahrenheitAction(_ sender: Any) {
         

@@ -14,11 +14,7 @@ class NetworkManager {
     private init() {}
     
     // Generic method to fetch and decode any type conforming to Decodable
-    func fetchData<T: Decodable>(from urlString: String, model: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL.")
-            return
-        }
+    func fetchData<T: Decodable>(from url: URL, model: T.Type, completion: @escaping (Result<T, Error>) -> Void) {
         
         print(url)
         

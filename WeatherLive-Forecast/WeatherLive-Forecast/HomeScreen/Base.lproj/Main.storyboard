@@ -128,7 +128,7 @@
                                             <action selector="backButton:" destination="KMy-c3-QtB" eventType="touchUpInside" id="qrd-sK-ZgY"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favourites" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IJm-Rg-XmP" customClass="tavleViewTitleLable" customModule="Weather" customModuleProvider="target">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Favourites" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IJm-Rg-XmP" customClass="tavleViewTitleLable" customModule="WeatherLive_Forecast" customModuleProvider="target">
                                         <rect key="frame" x="50.000000000000007" y="10" width="82.666666666666686" height="30"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -146,7 +146,7 @@
                                     <constraint firstItem="8Ii-Er-md2" firstAttribute="leading" secondItem="oz8-tK-1Lk" secondAttribute="leading" constant="15" id="zgY-gN-p57"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No cities added as favourite" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S3e-LG-4aj" customClass="whiteTextLableFont18" customModule="Weather" customModuleProvider="target">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No cities added as favourite" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S3e-LG-4aj" customClass="whiteTextLableFont18" customModule="WeatherLive_Forecast" customModuleProvider="target">
                                 <rect key="frame" x="91.000000000000014" y="416" width="211.33333333333337" height="20.333333333333314"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -160,7 +160,7 @@
                                     <outlet property="delegate" destination="KMy-c3-QtB" id="MB4-Lz-qOc"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Number of favourite cities" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="akF-PL-XNy" customClass="CoustomLabels" customModule="Weather" customModuleProvider="target">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Number of favourite cities" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="akF-PL-XNy" customClass="CoustomLabels" customModule="WeatherLive_Forecast" customModuleProvider="target">
                                 <rect key="frame" x="15" y="112" width="196.33333333333334" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="CkT-iB-eWo"/>
@@ -232,7 +232,7 @@
                                             <action selector="backButton:" destination="epk-cq-FhW" eventType="touchUpInside" id="GP2-7x-ONe"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recent Search" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8zs-s2-R4C" customClass="tavleViewTitleLable" customModule="Weather" customModuleProvider="target">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recent Search" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8zs-s2-R4C" customClass="tavleViewTitleLable" customModule="WeatherLive_Forecast" customModuleProvider="target">
                                         <rect key="frame" x="50.000000000000007" y="10" width="115.66666666666669" height="30"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -260,8 +260,8 @@
                                 <rect key="frame" x="0.0" y="117" width="393" height="701"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <connections>
-                                    <outlet property="dataSource" destination="epk-cq-FhW" id="Tvg-W3-3db"/>
-                                    <outlet property="delegate" destination="epk-cq-FhW" id="BUg-AM-0yD"/>
+                                    <outlet property="dataSource" destination="epk-cq-FhW" id="zaU-2j-3JS"/>
+                                    <outlet property="delegate" destination="epk-cq-FhW" id="gyc-Lu-L3p"/>
                                 </connections>
                             </tableView>
                         </subviews>
@@ -283,7 +283,7 @@
                     <navigationItem key="navigationItem" id="5c0-ke-uO0"/>
                     <connections>
                         <outlet property="emptyMessege" destination="fz9-as-FIS" id="pKO-5r-DE6"/>
-                        <outlet property="recentSearchedTableView" destination="6YS-hH-ikl" id="muO-Sm-v3e"/>
+                        <outlet property="recentSearchedTableView" destination="6YS-hH-ikl" id="m9T-8U-3cL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qWr-Ao-d9K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

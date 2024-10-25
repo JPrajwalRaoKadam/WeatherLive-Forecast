@@ -13,17 +13,14 @@ class RecentSearchViewController: UIViewController {
     
     @IBOutlet weak var emptyMessege: UILabel!
     
+    var recentWeatherDetailsList: [CityWeatherDetailsModel] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = true
-        
+       // self.navigationController?.isNavigationBarHidden = true
+        recentSearchedTableView.register(cellType: FavouriteCityTableViewCell.self)
         CommonMethods.shared.setGradientBackground(view: self.view)
-        if let cityWeatherList = recentSearchedTableView {
-            cityWeatherList.register(cellType: FavouriteCityTableViewCell.self)
-        }
-        
-        totalRecentSearchedCities(cities: 3)
     }
     
     func totalRecentSearchedCities(cities: Int) {
@@ -42,6 +39,12 @@ class RecentSearchViewController: UIViewController {
         self.emptyMessege.isHidden = !hide
     }
     
+    func configureRecentList(recentList: [CityWeatherDetailsModel]) {
+        totalRecentSearchedCities(cities: recentList.count)
+        self.recentWeatherDetailsList = recentList
+        self.recentSearchedTableView.reloadData()
+    }
+    
     @IBAction func backButton(_ sender: Any) {
         navigationController?.popViewController(animated: true)
     }
@@ -50,15 +53,18 @@ class RecentSearchViewController: UIViewController {
 extension RecentSearchViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 2
+        return recentWeatherDetailsList.count
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FavouriteCityTableViewCell", for: indexPath)
-        
-        return cell
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "FavouriteCityTableViewCell", for: indexPath) as? FavouriteCityTableViewCell {
+            let data = self.recentWeatherDetailsList[indexPath.row]
+            cell.configureRecentListCell(data: data)
+            return cell
+        }
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
