@@ -82,7 +82,7 @@ class HomeViewModel {
             WeatherItem(title: "Min Temp", value: "\(Int(weatherResponse.main.temp_min - 273.15))", unit: "°C", imageName: "temperature"),
             WeatherItem(title: "Max Temp", value: "\(Int(weatherResponse.main.temp_max - 273.15))", unit: "°C", imageName: "temperature"),
             WeatherItem(title: "Humidity", value: "\(weatherResponse.main.humidity)", unit: "%", imageName: "humidity"),
-            WeatherItem(title: "Description", value: weatherResponse.weather.first?.description.capitalized ?? "", unit: "", imageName: "clouds")
+            WeatherItem(title: "WindSpeed", value: "\(weatherResponse.wind.speed)", unit: "", imageName: "wind")
         ]
     }
     

@@ -12,8 +12,7 @@ class HomeViewController: UIViewController {
     
     @IBOutlet weak var homeTableView: UITableView!
     
-    
-    var data = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"]
+    var Swipedata = ["Item 1", "Item 2", "Item 3"]
     
     // Refresh control
     let refreshControl = UIRefreshControl()
@@ -22,10 +21,11 @@ class HomeViewController: UIViewController {
     private var cityWeatherDetails: CityWeatherDetailsModel?
     private var weatherItems: [WeatherItem]?
     var recentWeatherDetailsList: [CityWeatherDetailsModel] = []
+    var favoriteCities: [CityWeatherDetailsModel] = []
     
     private lazy var pageControl: UIPageControl = {
         let control = UIPageControl()
-        control.numberOfPages = data.count
+        control.numberOfPages = Swipedata.count
         control.currentPage = 0
         control.pageIndicatorTintColor = .gray
         control.currentPageIndicatorTintColor = .white
@@ -57,6 +57,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         self.homeTableView.isHidden = true
+        setupFavoritesNotification()
         locationManager.requestLocation()
         //   homeTableView.backgroundColor = .purple
         homeTableView.register(cellType: WeatherTableViewCell.self)
@@ -73,13 +74,36 @@ class HomeViewController: UIViewController {
         
         self.viewModel = HomeViewModel(self)
         
-       getCurrentLatLon()
-
-        //  configureRefreshControl()
-        
-        // Example usage:
+        getCurrentLatLon()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = true
+    }
+    
+    // Update viewDidLoad to call updateContentSize when view layout is complete
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateContentSize()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    
+    func setupFavoritesNotification() {
+            NotificationCenter.default.addObserver(self,
+                                                 selector: #selector(handleFavoritesUpdate),
+                                                 name: FavoritesManager.favoritesUpdatedNotification,
+                                                 object: nil)
+        }
+        
+        @objc private func handleFavoritesUpdate() {
+            // Refresh all page table views
+            pageTableViews.forEach { $0.reloadData() }
+        }
     
     
     private func setupUI() {
@@ -92,11 +116,11 @@ class HomeViewController: UIViewController {
             scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.8)
         ])
         
-        let contentWidth = view.bounds.width * CGFloat(data.count)
+        let contentWidth = view.bounds.width * CGFloat(Swipedata.count)
         scrollView.contentSize = CGSize(width: contentWidth, height: scrollView.bounds.height)
         
         // Create table views and refresh controls for each page
-        for i in 0..<data.count {
+        for i in 0..<Swipedata.count {
             let tableView = UITableView(frame: .zero, style: .plain)
             tableView.delegate = self
             tableView.dataSource = self
@@ -158,7 +182,7 @@ class HomeViewController: UIViewController {
     // Update handleSwipe
     @objc private func handleSwipe(_ gesture: UISwipeGestureRecognizer) {
         let direction: CGFloat = gesture.direction == .left ? 1 : -1
-        let nextPage = max(0, min(currentPage + Int(direction), data.count - 1))
+        let nextPage = max(0, min(currentPage + Int(direction), Swipedata.count - 1))
         
         if nextPage != currentPage {
             currentPage = nextPage
@@ -175,45 +199,12 @@ class HomeViewController: UIViewController {
         }
     }
     
-    // Update viewDidLoad to call updateContentSize when view layout is complete
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        updateContentSize()
-    }
+    
     
     private func updateContentSize() {
-        let contentWidth = view.bounds.width * CGFloat(data.count)
+        let contentWidth = view.bounds.width * CGFloat(Swipedata.count)
         scrollView.contentSize = CGSize(width: contentWidth, height: scrollView.bounds.height)
     }
-    
-    //    func configureRefreshControl() {
-    //        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged)
-    //        currentTableview.refreshControl = refreshControl
-    //    }
-    //
-    //    @objc func refreshData() {
-    //        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-    //            self.data = ["New Item \(self.currentPage + 1)"]
-    //            self.currentTableview.reloadData()
-    //            self.refreshControl.endRefreshing()
-    //        }
-    //    }
-    
-    //    @objc func refreshData() {
-    //        // Reload data or fetch new data here
-    //        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-    //            self.data = ["New Item 1", "New Item 2", "New Item 3", "New Item 4", "New Item 5"]
-    //            self.homeTableView.reloadData()
-    //            self.refreshControl.endRefreshing()
-    //        }
-    //    }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.isNavigationBarHidden = true
-    }
-    
     
     @IBAction func hamburgerMenuTapped(_ sender: Any) {
         hamburgerMenu.toggleMenu(on: self)
@@ -252,11 +243,6 @@ class HomeViewController: UIViewController {
             self.viewModel?.getHomeScreenWeatherData(latitude: self.latitude, longitude: self.longitude)
         }
     }
-    
-    func getSearchCityName() {
-        // Assign searched city name
-    }
-    
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
@@ -305,10 +291,13 @@ extension HomeViewController: MenuItemsTapped {
         case .home:
             print("Home")
         case .favourites:
-            self.pushViewController(fromStoryboard: "Main", viewControllerID: "FavouriteViewController")
+            self.pushViewControllerNew(withIdentifier: "FavouriteViewController") { (favouriteCityVC: FavouriteViewController) in
+                //TODO: - Pass data to fav vc
+            }
         case .recents:
+            let recentList = CoreDataManager.shared.fetchRecentWeather()
             self.pushViewControllerNew(withIdentifier: "RecentSearchViewController") { (detailVC: RecentSearchViewController) in
-                detailVC.configureRecentList(recentList: self.recentWeatherDetailsList)
+                detailVC.configureRecentList(recentList: recentList)
             }
         }
     }
@@ -329,7 +318,6 @@ extension HomeViewController: UIScrollViewDelegate {
         
         // Refresh the current page's table view
         self.currentTableview = pageTableViews[page]
-        //self.configureRefreshControl()
         pageTableViews[page].reloadData()
     }
 }
@@ -351,6 +339,7 @@ extension HomeViewController: HomeScreenDataProtocol {
             self.weatherItems = weatherItems
             if isFromSearch {
                 self.recentWeatherDetailsList.append(data)
+                self.saveRecentWeatherToCoreData(data: self.recentWeatherDetailsList)
             }
             self.pageTableViews.forEach { $0.reloadData() }
         }
@@ -363,8 +352,8 @@ extension HomeViewController: HomeScreenDataProtocol {
             
             // Show error alert
             let alert = UIAlertController(title: "Error",
-                                        message: error.localizedDescription,
-                                        preferredStyle: .alert)
+                                          message: error.localizedDescription,
+                                          preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(alert, animated: true)
         }
@@ -377,5 +366,13 @@ extension HomeViewController: SendSearchData {
     func sendSearchData(cityName: String) {
         viewModel?.getWeatherData(cityName: cityName)
         self.pageTableViews.forEach { $0.reloadData() }
+    }
+}
+
+extension HomeViewController {
+    func saveRecentWeatherToCoreData(data: [CityWeatherDetailsModel]) {
+        DispatchQueue.main.async {
+            CoreDataManager.shared.saveRecentWeatherList(details: data)
+        }
     }
 }

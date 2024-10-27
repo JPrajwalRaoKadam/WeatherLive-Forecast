@@ -21,6 +21,11 @@ class RecentSearchViewController: UIViewController {
        // self.navigationController?.isNavigationBarHidden = true
         recentSearchedTableView.register(cellType: FavouriteCityTableViewCell.self)
         CommonMethods.shared.setGradientBackground(view: self.view)
+        
+       // loadRecentWeatherFromCoreData()
+            
+            // Debug print to check data
+        print("Loaded weather count: \(recentWeatherDetailsList.count)")
     }
     
     func totalRecentSearchedCities(cities: Int) {
@@ -40,9 +45,13 @@ class RecentSearchViewController: UIViewController {
     }
     
     func configureRecentList(recentList: [CityWeatherDetailsModel]) {
+        print("Configuring with \(recentList.count) items")
         totalRecentSearchedCities(cities: recentList.count)
         self.recentWeatherDetailsList = recentList
         self.recentSearchedTableView.reloadData()
+        
+        // Save to Core Data
+        //saveRecentWeatherToCoreData()
     }
     
     @IBAction func backButton(_ sender: Any) {
@@ -62,6 +71,7 @@ extension RecentSearchViewController: UITableViewDataSource {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "FavouriteCityTableViewCell", for: indexPath) as? FavouriteCityTableViewCell {
             let data = self.recentWeatherDetailsList[indexPath.row]
             cell.configureRecentListCell(data: data)
+            cell.favButton.isHidden = true
             return cell
         }
         return UITableViewCell()
@@ -73,3 +83,18 @@ extension RecentSearchViewController: UITableViewDataSource {
 }
 
 
+// MARK: - Updated RecentSearchViewController
+extension RecentSearchViewController {
+//    func loadRecentWeatherFromCoreData() {
+//            DispatchQueue.main.async {
+//                let recentList = CoreDataManager.shared.fetchRecentWeather()
+//                self.configureRecentList(recentList: recentList)
+//            }
+//        }
+//        
+//        func saveRecentWeatherToCoreData() {
+//            DispatchQueue.main.async {
+//                CoreDataManager.shared.saveRecentWeatherList(details: self.recentWeatherDetailsList)
+//            }
+//        }
+}

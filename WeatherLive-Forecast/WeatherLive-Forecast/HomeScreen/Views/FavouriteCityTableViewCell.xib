@@ -19,26 +19,20 @@
                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bTP-RV-1DQ">
                         <rect key="frame" x="10" y="10" width="338" height="105"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="CityName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7c7-zh-QJs">
-                                <rect key="frame" x="15" y="10" width="75" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CityName" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7c7-zh-QJs">
+                                <rect key="frame" x="14.999999999999993" y="10" width="107.33333333333331" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="6:45 PM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mxr-3m-aOT">
-                                <rect key="frame" x="15" y="37" width="48" height="15"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Weather Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fUZ-mP-EaQ">
-                                <rect key="frame" x="15" y="65" width="106" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weather Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fUZ-mP-EaQ">
+                                <rect key="frame" x="15" y="63" width="106" height="32"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oup-vi-Jns" customClass="ToggleButton" customModule="WeatherLive_Forecast" customModuleProvider="target">
-                                <rect key="frame" x="285.66666666666669" y="68" width="37.333333333333314" height="22"/>
+                                <rect key="frame" x="302.33333333333331" y="68" width="20.666666666666686" height="22"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" image="heart" catalog="system"/>
                             </button>
@@ -51,17 +45,15 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="oup-vi-Jns" firstAttribute="centerX" secondItem="IA9-0O-ed2" secondAttribute="centerX" id="5ZV-Gi-ftW"/>
-                            <constraint firstItem="Mxr-3m-aOT" firstAttribute="leading" secondItem="bTP-RV-1DQ" secondAttribute="leading" constant="15" id="E9x-2E-qqT"/>
                             <constraint firstAttribute="bottom" secondItem="oup-vi-Jns" secondAttribute="bottom" constant="15" id="I8u-rW-fzO"/>
                             <constraint firstAttribute="trailing" secondItem="oup-vi-Jns" secondAttribute="trailing" constant="15" id="JII-hS-T22"/>
                             <constraint firstAttribute="bottom" secondItem="fUZ-mP-EaQ" secondAttribute="bottom" constant="10" id="L1q-fc-a64"/>
                             <constraint firstAttribute="trailing" secondItem="IA9-0O-ed2" secondAttribute="trailing" constant="15" id="QSH-WO-s6h"/>
                             <constraint firstItem="7c7-zh-QJs" firstAttribute="top" secondItem="bTP-RV-1DQ" secondAttribute="top" constant="10" id="UiG-Ct-QGb"/>
                             <constraint firstItem="IA9-0O-ed2" firstAttribute="top" secondItem="bTP-RV-1DQ" secondAttribute="top" constant="10" id="gig-KC-Scn"/>
+                            <constraint firstItem="fUZ-mP-EaQ" firstAttribute="centerY" secondItem="oup-vi-Jns" secondAttribute="centerY" id="otk-P4-nOb"/>
                             <constraint firstItem="7c7-zh-QJs" firstAttribute="leading" secondItem="bTP-RV-1DQ" secondAttribute="leading" constant="15" id="s3j-R7-C98"/>
-                            <constraint firstItem="fUZ-mP-EaQ" firstAttribute="top" secondItem="Mxr-3m-aOT" secondAttribute="bottom" constant="13" id="sdA-Ii-bvR"/>
-                            <constraint firstItem="Mxr-3m-aOT" firstAttribute="top" secondItem="7c7-zh-QJs" secondAttribute="bottom" constant="6" id="tzO-Qv-0V8"/>
+                            <constraint firstItem="fUZ-mP-EaQ" firstAttribute="top" secondItem="7c7-zh-QJs" secondAttribute="bottom" constant="23" id="udH-8m-dk7"/>
                             <constraint firstItem="fUZ-mP-EaQ" firstAttribute="leading" secondItem="bTP-RV-1DQ" secondAttribute="leading" constant="15" id="y8W-33-IE7"/>
                         </constraints>
                     </view>
@@ -78,7 +70,6 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <connections>
                 <outlet property="cityName" destination="7c7-zh-QJs" id="oRd-Jj-fac"/>
-                <outlet property="cityTime" destination="Mxr-3m-aOT" id="nCg-f2-35o"/>
                 <outlet property="cityWeather" destination="fUZ-mP-EaQ" id="I9Y-1B-wb3"/>
                 <outlet property="containerView" destination="bTP-RV-1DQ" id="VW8-A8-AaC"/>
                 <outlet property="favButton" destination="oup-vi-Jns" id="yyf-me-PYW"/>

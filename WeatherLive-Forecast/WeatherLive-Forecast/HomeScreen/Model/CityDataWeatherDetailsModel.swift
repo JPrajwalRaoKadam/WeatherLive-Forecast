@@ -12,7 +12,7 @@ struct CityDataWeatherDetailsModel {
     let temp_max: Double
     let pressure: Int
     let humidity: Int
-    var weatherDescription: String
+    var windSpeed: String
 }
 
 struct WeatherItem {

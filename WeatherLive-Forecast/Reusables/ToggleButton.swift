@@ -24,7 +24,7 @@ class ToggleButton: UIButton {
     func setToggleButtonProperties() {
         
         self.setImage(UIImage(systemName: "heart"), for: .normal)
-        self.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        self.setImage(UIImage(systemName: "heart.fill"), for: .selected)
         
         self.isSelected = false
         

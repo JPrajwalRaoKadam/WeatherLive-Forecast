@@ -8,7 +8,7 @@
 import UIKit
 
 class WeatherTableViewCell: UITableViewCell {
-
+    
     
     @IBOutlet weak var cityName: UILabel!
     
@@ -20,30 +20,36 @@ class WeatherTableViewCell: UITableViewCell {
     
     @IBOutlet weak var tempratureLabel: UILabel!
     
-    @IBOutlet weak var celciusFahrenheitToggle: UISegmentedControl!
+    private var cityData: CityWeatherDetailsModel?
+       
+       override func prepareForReuse() {
+           super.prepareForReuse()
+           cityData = nil
+           favButton.isSelected = false
+       }
+       
+       func configureCell(data: CityWeatherDetailsModel) {
+           self.cityData = data
+           self.cityName.text = data.cityName
+           self.tempratureLabel.text = data.temperature
+           self.weatherDescrition.text = data.weatherDescription
+           self.weatherImage.image = UIImage(systemName: data.weatherImage)
+           
+           // Update favorite button state
+           updateFavoriteButtonState()
+       }
+       
+       private func updateFavoriteButtonState() {
+           guard let data = cityData else { return }
+           // Ensure UI updates happen on main thread
+           DispatchQueue.main.async {
+               self.favButton.isSelected = FavoritesManager.shared.isFavorite(data)
+           }
+       }
     
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
-    func configureCell(data: CityWeatherDetailsModel) {
-        self.cityName.text = data.cityName
-        self.tempratureLabel.text = data.temperature
-        self.weatherDescrition.text = data.weatherDescription
-        self.weatherImage.image = UIImage(systemName: data.weatherImage)
-    }
-    
-    
-    @IBAction func celciusFahrenheitAction(_ sender: Any) {
-        
+    @IBAction func toggleButtonAction(_ sender: ToggleButton) {
+        guard let data = cityData else { return }
+        favButton.isSelected = FavoritesManager.shared.toggleFavorite(data)
     }
     
 }

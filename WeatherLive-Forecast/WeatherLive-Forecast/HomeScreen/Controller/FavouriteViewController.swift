@@ -8,27 +8,55 @@
 import UIKit
 
 class FavouriteViewController: UIViewController {
- 
+    
     @IBOutlet weak var favListTableView: UITableView!
     
     @IBOutlet weak var totalNumberOfFavourites: UILabel!
     
     @IBOutlet weak var removeAllContentButton: UIButton!
-
+    
     @IBOutlet weak var emptyMessege: UILabel!
+    private var favorites: [CityWeatherDetailsModel] = []
     let refreshControl = UIRefreshControl()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
-       // self.view.backgroundColor = .clear
         CommonMethods.shared.setGradientBackground(view: self.view)
+        
+        setupTableView()
+        setupNotifications()
+        updateUI()
+    }
+    
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupTableView() {
         if let cityWeatherList = favListTableView {
             cityWeatherList.register(cellType: FavouriteCityTableViewCell.self)
         }
-        totalFavouriteCities(cities: 5)
         self.configureRefreshControl()
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(favoritesUpdated),
+                                               name: FavoritesManager.favoritesUpdatedNotification,
+                                               object: nil)
+    }
+    
+    @objc private func favoritesUpdated() {
+        updateUI()
+    }
+    
+    private func updateUI() {
+        favorites = FavoritesManager.shared.getAllFavorites()
+        totalFavouriteCities(cities: favorites.count)
+        favListTableView.reloadData()
     }
     
     func totalFavouriteCities(cities: Int) {
@@ -57,8 +85,18 @@ class FavouriteViewController: UIViewController {
     }
     
     @IBAction func removeAllFavourites(_ sender: Any) {
-
-
+        let alert = UIAlertController(title: "Remove All Favorites",
+                                      message: "Are you sure you want to remove all favorite cities?",
+                                      preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Remove All", style: .destructive) { [weak self] _ in
+            FavoritesManager.shared.removeAllFavorites()
+            self?.updateUI()
+        })
+        
+        present(alert, animated: true)
+        
     }
     
     func configureRefreshControl() {
@@ -73,7 +111,7 @@ class FavouriteViewController: UIViewController {
             self.refreshControl.endRefreshing()
         }
     }
-
+    
 }
 
 extension FavouriteViewController: UITableViewDelegate {
@@ -81,23 +119,33 @@ extension FavouriteViewController: UITableViewDelegate {
         
     }
 }
-    
+
 extension FavouriteViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return 2
-        
+        return favorites.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "FavouriteCityTableViewCell", for: indexPath) as? FavouriteCityTableViewCell else {
+            return UITableViewCell()
+        }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FavouriteCityTableViewCell", for: indexPath)
+        let favorite = favorites[indexPath.row]
+        cell.configureFavouriteListCell(data: favorite)
+        cell.favButton.isSelected = true
+        
+        // Handle favorite button tap in cell
+        cell.favButton.addTarget(self, action: #selector(favoriteCellButtonTapped(_:)), for: .touchUpInside)
+        cell.favButton.tag = indexPath.row
         
         return cell
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        UITableView.automaticDimension
+    @objc private func favoriteCellButtonTapped(_ sender: ToggleButton) {
+        let index = sender.tag
+        let favorite = favorites[index]
+        _ = FavoritesManager.shared.toggleFavorite(favorite)
+        // UI will be updated via notification
     }
 }
 
