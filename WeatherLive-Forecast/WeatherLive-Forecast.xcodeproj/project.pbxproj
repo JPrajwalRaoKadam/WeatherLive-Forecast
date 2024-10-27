@@ -156,6 +156,7 @@
 			isa = PBXGroup;
 			children = (
 				1010CEC02CCBDCC2003B3BEF /* CoreData.swift */,
+				1010CEBC2CCBDBEB003B3BEF /* WeatherApp.xcdatamodeld */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -229,7 +230,6 @@
 		1010CECD2CCE5C83003B3BEF /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				1010CEBC2CCBDBEB003B3BEF /* WeatherApp.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
