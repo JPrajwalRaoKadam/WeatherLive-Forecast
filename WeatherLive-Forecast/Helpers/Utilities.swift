@@ -57,15 +57,15 @@ enum WeatherType: String {
     case showerRainAndDrizzle = "Shower rain and drizzle"
     
     // Rain Conditions
-    case lightRain = "Light rain"
-    case moderateRain = "Moderate rain"
-    case heavyRain = "Heavy rain"
-    case freezingRain = "Freezing rain"
-    case showerRain = "Shower rain"
+    case lightRain = "Light Rain"
+    case moderateRain = "Moderate Rain"
+    case heavyRain = "Heavy Rain"
+    case freezingRain = "Freezing Rain"
+    case showerRain = "Shower Rain"
     
     // Snow Conditions
-    case lightSnow = "Light snow"
-    case heavySnow = "Heavy snow"
+    case lightSnow = "Light Snow"
+    case heavySnow = "Heavy Snow"
     case sleet = "Sleet"
     
     // Atmosphere Conditions
@@ -79,10 +79,10 @@ enum WeatherType: String {
     case clearSky = "Clear sky"
     
     // Cloud Conditions
-    case fewClouds = "Few clouds"
-    case scatteredClouds = "Scattered clouds"
-    case brokenClouds = "Broken clouds"
-    case overcastClouds = "Overcast clouds"
+    case fewClouds = "Few Clouds"
+    case scatteredClouds = "Scattered Clouds"
+    case brokenClouds = "Broken Clouds"
+    case overcastClouds = "Overcast Clouds"
     
     func imageName() -> String {
         switch self {
@@ -113,9 +113,18 @@ enum WeatherType: String {
         }
     }
     
-    // Method to get image name from string
     static func imageName(for weather: String) -> String? {
-        return WeatherType(rawValue: weather.capitalized)?.imageName()
+        // Convert input to title case (first letter of each word capitalized)
+        let words = weather.components(separatedBy: " ")
+        let titleCased = words.map { $0.prefix(1).uppercased() + $0.dropFirst().lowercased() }
+        let formattedWeather = titleCased.joined(separator: " ")
+        
+        print("Trying to match: \(formattedWeather)") // Debug print
+        
+        if let weatherType = WeatherType(rawValue: formattedWeather) {
+            return weatherType.imageName()
+        }
+        return nil
     }
 }
 

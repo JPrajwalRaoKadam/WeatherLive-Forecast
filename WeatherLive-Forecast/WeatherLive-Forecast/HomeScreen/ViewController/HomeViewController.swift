@@ -20,6 +20,7 @@ class HomeViewController: UIViewController {
     private var refreshControls: [UIRefreshControl] = []
     private var cityWeatherDetails: CityWeatherDetailsModel?
     private var weatherItems: [WeatherItem]?
+    private var dayWeatherItems: [DailyWeatherData]?
     var recentWeatherDetailsList: [CityWeatherDetailsModel] = []
     var favoriteCities: [CityWeatherDetailsModel] = []
     
@@ -56,6 +57,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        self.navigationController?.navigationBar.isHidden = true
         self.homeTableView.isHidden = true
         setupFavoritesNotification()
         locationManager.requestLocation()
@@ -124,9 +126,10 @@ class HomeViewController: UIViewController {
             let tableView = UITableView(frame: .zero, style: .plain)
             tableView.delegate = self
             tableView.dataSource = self
-            tableView.translatesAutoresizingMaskIntoConstraints = false
             tableView.backgroundColor = .clear
             tableView.separatorStyle = .none
+            tableView.translatesAutoresizingMaskIntoConstraints = false
+            
             
             // Register cells
             tableView.register(cellType: WeatherTableViewCell.self)
@@ -269,7 +272,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             }
         default :
             if let cell = tableView.dequeueReusableCell(withIdentifier: "RecentWeatherTableViewCell", for: indexPath) as? RecentWeatherTableViewCell {
-                //  cell.setTableViewHeight()
+                cell.configureCell(data: self.dayWeatherItems ?? [])
                 return cell
             }
         }
@@ -278,8 +281,11 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableView.estimatedRowHeight = 250
         return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 300
     }
 }
 
@@ -325,25 +331,42 @@ extension HomeViewController: UIScrollViewDelegate {
 
 extension HomeViewController: HomeScreenDataProtocol {
     func showLoader() {
-        LoaderManager.shared.showLoader(on: self.view)
+//        LoaderManager.shared.showLoader(on: self.view)
     }
     
     func hideLoader() {
-        LoaderManager.shared.hideLoader()
+//        LoaderManager.shared.hideLoader()
     }
     
     func sendHomeScreenData(data: CityWeatherDetailsModel, weatherItems: [WeatherItem], isFromSearch: Bool) {
         LoaderManager.shared.hideLoader()
-        DispatchQueue.main.async {
-            self.cityWeatherDetails = data
-            self.weatherItems = weatherItems
+        DispatchQueue.main.async { [weak self] in
+            guard let strongSelf = self else { return }
+            strongSelf.cityWeatherDetails = data
+            strongSelf.weatherItems = weatherItems
             if isFromSearch {
-                self.recentWeatherDetailsList.append(data)
-                self.saveRecentWeatherToCoreData(data: self.recentWeatherDetailsList)
+                strongSelf.recentWeatherDetailsList.append(data)
+                strongSelf.saveRecentWeatherToCoreData(data: strongSelf.recentWeatherDetailsList)
             }
-            self.pageTableViews.forEach { $0.reloadData() }
+            strongSelf.viewModel?.getFiveDayWeatherData(cityName: data.cityName)
+            strongSelf.pageTableViews.forEach { $0.reloadData() }
         }
     }
+    
+    func sendFiveDayForecastData(data: [DailyWeatherData]) {
+            LoaderManager.shared.hideLoader()
+            
+            // Process and store the 5-day forecast data to use in the UI
+            DispatchQueue.main.async {
+                self.dayWeatherItems = data.map { DailyWeatherData(date: $0.date, weatherImage: $0.weatherImage, temperature: $0.temperature) }
+                
+                // Reload each page's table view to reflect the new data
+                self.pageTableViews.forEach { $0.reloadData() }
+                
+                // Print or log the data if necessary for debugging
+                print("Received and processed 5-day forecast data: \(data)")
+            }
+        }
     
     func handleError(_ error: Error) {
         DispatchQueue.main.async {
@@ -358,6 +381,15 @@ extension HomeViewController: HomeScreenDataProtocol {
             self.present(alert, animated: true)
         }
     }
+    
+    func presentAlertWithMessage(message: String) {
+        let alert = UIAlertController(title: "Error",
+                                      message: message,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK",
+                                      style: .default))
+        self.present(alert, animated: true)
+    }
 }
 
 
@@ -365,6 +397,7 @@ extension HomeViewController: SendSearchData {
     
     func sendSearchData(cityName: String) {
         viewModel?.getWeatherData(cityName: cityName)
+        viewModel?.getFiveDayWeatherData(cityName: cityName)
         self.pageTableViews.forEach { $0.reloadData() }
     }
 }

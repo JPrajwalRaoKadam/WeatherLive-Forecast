@@ -48,6 +48,7 @@ class FavouriteCityTableViewCell: UITableViewCell {
         self.cityData = data
         self.cityName.text = data.cityName
         self.temperature.text = data.temperature
+        self.cityWeather.text = data.weatherDescription
     }
     
     //MARK: - configure Favourites List Cell

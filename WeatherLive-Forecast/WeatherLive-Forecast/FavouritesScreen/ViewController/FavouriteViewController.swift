@@ -145,7 +145,6 @@ extension FavouriteViewController: UITableViewDataSource {
         let index = sender.tag
         let favorite = favorites[index]
         _ = FavoritesManager.shared.toggleFavorite(favorite)
-        // UI will be updated via notification
     }
 }
 

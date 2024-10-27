@@ -12,6 +12,8 @@ protocol HomeScreenDataProtocol: AnyObject {
     func showLoader()
     func hideLoader()
     func handleError(_ error: Error)
+    func sendFiveDayForecastData(data: [DailyWeatherData])
+    func presentAlertWithMessage(message: String)
 }
 class HomeViewModel {
     
@@ -38,7 +40,7 @@ class HomeViewModel {
     
     func getHomeScreenWeatherData(latitude: Double, longitude: Double) {
         retreiveApiKey()
-       // view.showLoader()
+        // view.showLoader()
         guard let weatherURL = urlBuilder
             .setEndpoint("weather")
             .addQueryParameter(key: "lat", value: String(describing: latitude))
@@ -140,11 +142,70 @@ class HomeViewModel {
                     let weatherItems = strongSelf.getWeatherDetails( from: weatherResponse)
                     strongSelf.view.sendHomeScreenData(data: cityDetails, weatherItems: weatherItems, isFromSearch: true)
                 case .failure(let error):
-                    print("Error fetching weather data: \(error.localizedDescription)")
+                    var message = "An error occurred"
+                    
+                    if let networkError = error as? NetworkManager.NetworkError {
+                        message = networkError.message
+                    } else {
+                        message = error.localizedDescription
+                    }
+                    
+                    self?.view.presentAlertWithMessage(message: message)
                 }
             }
         }
     }
+    
+    func getFiveDayWeatherData(cityName: String) {
+        retreiveApiKey()
+        view.showLoader()
+        guard let forecastURL = urlBuilder
+            .setEndpoint("forecast")
+            .addQueryParameter(key: "q", value: String(describing: cityName))
+            .addQueryParameter(key: "appid", value: apiKey)
+            .build() else {
+            view.hideLoader()
+            view.handleError(HomeViewModelError.invalidURL)
+            return
+        }
+        
+        NetworkManager.shared.fetchData(from: forecastURL, model: ForecastResponse.self) { result in
+            DispatchQueue.main.async { [weak self] in
+                guard let strongSelf = self else { return }
+                strongSelf.view.hideLoader()
+                
+                switch result {
+                case .success(let forecastResponse):
+                    var uniqueDaysWeather: [ForecastItem] = []
+                    var processedDates: Set<String> = []
+                    
+                    for item in forecastResponse.forecastItems {
+                        let date = item.dateText.prefix(10)  // Extract date in "YYYY-MM-DD" format
+                        if !processedDates.contains(String(date)) {
+                            processedDates.insert(String(date))
+                            uniqueDaysWeather.append(item)
+                        }
+                    }
+                    
+                    let dailyWeatherData = uniqueDaysWeather.map { item in
+                        return DailyWeatherData(
+                            date: item.dateText,
+                            weatherImage: item.weatherConditions.first?.description ?? "",
+                            temperature: item.conditions.temperature
+                        )
+                    }
+                    
+                    print("5-Day Weather Data: \(dailyWeatherData)")
+                    strongSelf.view.sendFiveDayForecastData(data: dailyWeatherData)
+                    
+                case .failure(let error):
+                    print("Error fetching forecast data: \(error.localizedDescription)")
+                    strongSelf.view.handleError(error)
+                }
+            }
+        }
+    }
+    
 }
 
 

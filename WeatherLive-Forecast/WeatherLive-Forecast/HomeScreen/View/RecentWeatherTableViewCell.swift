@@ -13,6 +13,8 @@ class RecentWeatherTableViewCell: UITableViewCell {
     
     @IBOutlet weak var weatherForecastTableView: UITableView!
     
+    var dayWeatherItems: [DailyWeatherData] = []
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -22,6 +24,11 @@ class RecentWeatherTableViewCell: UITableViewCell {
         // Allow automatic row height based on content
         weatherForecastTableView.estimatedRowHeight = UITableView.automaticDimension
         weatherForecastTableView.rowHeight = UITableView.automaticDimension
+    }
+    
+    func configureCell(data: [DailyWeatherData]) {
+        self.dayWeatherItems = data
+        self.weatherForecastTableView.reloadData()
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -39,24 +46,20 @@ class RecentWeatherTableViewCell: UITableViewCell {
 
 extension RecentWeatherTableViewCell: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        1
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return dayWeatherItems.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DaysWeatherTableViewCell", for: indexPath)
         
-        return cell
+        if let weatherDetailCell = tableView.dequeueReusableCell(withIdentifier: "DaysWeatherTableViewCell", for: indexPath) as? DaysWeatherTableViewCell {
+            let data = self.dayWeatherItems[indexPath.row]
+            weatherDetailCell.configureCell(data: data)
+            return weatherDetailCell
+        }
+        return UITableViewCell()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-    
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//        setTableViewHeight()
-//    }
 }

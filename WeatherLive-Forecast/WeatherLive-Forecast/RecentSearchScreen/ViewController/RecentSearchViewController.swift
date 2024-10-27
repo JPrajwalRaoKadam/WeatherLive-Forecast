@@ -81,20 +81,3 @@ extension RecentSearchViewController: UITableViewDataSource {
         UITableView.automaticDimension
     }
 }
-
-
-// MARK: - Updated RecentSearchViewController
-extension RecentSearchViewController {
-//    func loadRecentWeatherFromCoreData() {
-//            DispatchQueue.main.async {
-//                let recentList = CoreDataManager.shared.fetchRecentWeather()
-//                self.configureRecentList(recentList: recentList)
-//            }
-//        }
-//        
-//        func saveRecentWeatherToCoreData() {
-//            DispatchQueue.main.async {
-//                CoreDataManager.shared.saveRecentWeatherList(details: self.recentWeatherDetailsList)
-//            }
-//        }
-}

@@ -7,13 +7,6 @@
 
 import UIKit
 
-//enum CityDataWeatherDetails {
-//    case TempMinMax
-//    case Humidity
-//    case Pressure
-//    case Description
-//}
-
 class WeatherDetailTableViewCell: UITableViewCell {
     
     @IBOutlet weak var weatherDetailCollectioView: UICollectionView!
@@ -27,9 +20,9 @@ class WeatherDetailTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
         weatherDetailCollectioView.register(cellType: WeatherDetailCollectionViewCell.self)
-        
+        self.weatherDetailCollectioView.backgroundColor = .systemPurple.withAlphaComponent(0.2)
+        setupCollectionViewShadow()
     }
     
     func configureCell(data: [WeatherItem]) {
@@ -43,6 +36,53 @@ class WeatherDetailTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    // Call this in viewDidLoad or after the collection view is initialized
+    func setupCollectionViewShadow() {
+            // Create shadow layer for top shadow
+            let topShadow = CALayer()
+            topShadow.frame = CGRect(x: 0, y: 0, width: weatherDetailCollectioView.frame.width, height: 8)
+            topShadow.shadowColor = UIColor.black.cgColor
+            topShadow.shadowOffset = CGSize(width: 0, height: 2)
+            topShadow.shadowOpacity = 0.2
+            topShadow.shadowRadius = 4
+            
+            // Create shadow layer for bottom shadow
+            let bottomShadow = CALayer()
+            bottomShadow.frame = CGRect(x: 0,
+                                       y: weatherDetailCollectioView.frame.height - 8,
+                                       width: weatherDetailCollectioView.frame.width,
+                                       height: 8)
+            bottomShadow.shadowColor = UIColor.black.cgColor
+            bottomShadow.shadowOffset = CGSize(width: 0, height: -2)
+            bottomShadow.shadowOpacity = 0.2
+            bottomShadow.shadowRadius = 4
+            
+            // Add shadow layers
+            weatherDetailCollectioView.layer.addSublayer(topShadow)
+            weatherDetailCollectioView.layer.addSublayer(bottomShadow)
+            
+            // Collection view styling
+            weatherDetailCollectioView.layer.masksToBounds = false
+            weatherDetailCollectioView.clipsToBounds = false
+            
+            // Optional: Add corner radius if needed
+            weatherDetailCollectioView.layer.cornerRadius = 12
+        }
+        
+        // Override layoutSubviews to update shadow frames when cell is resized
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Update shadow frames if needed
+        if let topShadow = weatherDetailCollectioView.layer.sublayers?.first,
+           let bottomShadow = weatherDetailCollectioView.layer.sublayers?.last {
+            topShadow.frame = CGRect(x: 0, y: 0,
+                                     width: weatherDetailCollectioView.frame.width, height: 8)
+            bottomShadow.frame = CGRect(x: 0,
+                                        y: weatherDetailCollectioView.frame.height - 8,
+                                        width: weatherDetailCollectioView.frame.width, height: 8)
+        }
+    }
 }
 
 extension WeatherDetailTableViewCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
